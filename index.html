@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Suck ma dick</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link rel="stylesheet" href="/bootstrap-5.3.2-dist/css/bootstrap.css">
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            /* padding: 2px; */
+            text-align: center;
+        }
+
+        .table {
+            width: 10px;
+            height: 10px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row g-2 py-3">
+            <div class="col">
+                <table class="table">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>E</th>
+                        <th>F</th>
+                        <th>G</th>
+                        <th>H</th>
+                        <th>I</th>
+                        <th>J</th>
+                        <th>K</th>
+                        <th>L</th>
+                        <th>M</th>
+                        <th>N</th>
+                        <th>O</th>
+                        <th>P</th>
+                        <th>Q</th>
+                        <th>R</th>
+                        <th>S</th>
+                        <th>T</th>
+                        <th>U</th>
+                        <th>V</th>
+                        <th>W</th>
+                        <th>X</th>
+                        <th>Y</th>
+                        <th>Z</th>
+                    </tr>
+                </table>
+            </div>
+            <div class="col">
+                    <div class="mb-3">
+                        <label for="text4encode" class="form-label">Text cần giải mã/mã hóa</label>
+                        <input type="text" class="form-control w-25" name="text4encode" id="text4encode"
+                            placeholder="Nhập văn bản cần giải mã/mã hóa...">
+                    </div>
+                    <div class="mb-3">
+                      <label for="key" class="form-label">Key</label>
+                      <input type="text"
+                        class="form-control w-25" name="key" id="key" placeholder="Nhập key...">
+                    </div>
+                    <button  class="btn btn-danger" onclick="encrypt();">Mã hóa</button>
+                    <button  class="btn btn-primary" onclick="decrypt();">Giải mã</button>
+                    <button class="btn btn-warning mx-5" onclick="clear_bt();">RESET ALL</button>
+                <div class="container my-3" id="bt">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        /// Function to generate the alphabet
+        function generateAlphabet() {
+            let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return alphabet.split("");
+        }
+
+        // Get a reference to the table
+        const table = document.querySelector("table");
+
+        // Generate rows with shifted alphabet
+        const alphabet = generateAlphabet();
+        for (let i = 0; i < alphabet.length; i++) {
+            const row = document.createElement("tr");
+            const shiftedAlphabet = alphabet
+                .slice(i)
+                .concat(alphabet.slice(0, i));
+            const hcell = document.createElement("th");
+            hcell.textContent = alphabet[i];
+            row.appendChild(hcell);
+            shiftedAlphabet.forEach((letter) => {
+                const cell = document.createElement("td");
+                cell.textContent = letter;
+                row.appendChild(cell);
+            });
+            table.appendChild(row);
+        }
+    </script>
+    <script>
+        class Vigenere_Cipher {
+            constructor(key, text) {
+                this.key = key;
+                this.text = text;
+            }
+            encrypt() {
+                let text = this.text;
+                let result = "";
+                let key = this.key;
+                let text_arr = text.split("");
+                let key_arr = key.split("");
+                let text_arr_length = text_arr.length;
+                let key_arr_length = key_arr.length;
+                for (let i = 0; i < text_arr_length; i++) {
+                    let text_char = text_arr[i].charCodeAt(0);
+                    let key_char = key_arr[i % key_arr_length].charCodeAt(0);
+                    let result_char = (text_char + key_char - 2 * 65) % 26 + 65;
+                    result += String.fromCharCode(result_char);
+                }
+                return result;
+            }
+            decrypt() {
+                let text = this.text;
+                let result = "";
+                let key = this.key;
+                let text_arr = text.split("");
+                let key_arr = key.split("");
+                let text_arr_length = text_arr.length;
+                let key_arr_length = key_arr.length;
+                for (let i = 0; i < text_arr_length; i++) {
+                    let text_char = text_arr[i].charCodeAt(0);
+                    let key_char = key_arr[i % key_arr_length].charCodeAt(0);
+                    let result_char = (text_char - key_char + 26) % 26 + 65;
+                    result += String.fromCharCode(result_char);
+                }
+                return result;
+            }
+        }
+
+        function encrypt() {
+            let text = document.getElementById("text4encode").value;
+            let key = document.getElementById("key").value;
+
+            text = text.replace(/ /g,'').toUpperCase();
+            key = key.replace(/ /g,'').toUpperCase();
+
+            let result = new Vigenere_Cipher(key, text).encrypt();
+            const result_out = document.createElement("p");
+            result_out.innerText = "Encrypt: " + text + " (k=" + key + ") : " + result;
+            document.getElementById("bt").appendChild(result_out);
+        }
+        function decrypt() {
+            let text = document.getElementById("text4encode").value;
+            let key = document.getElementById("key").value;
+            
+            text = text.replace(/ /g,'').toUpperCase();
+            key = key.replace(/ /g,'').toUpperCase();
+
+            let result = new Vigenere_Cipher(key, text).decrypt();
+            const result_out = document.createElement("p");
+            result_out.innerText = "Decrypt: " + text + " (k=" + key + ") : " + result;
+            document.getElementById("bt").appendChild(result_out);
+        }
+
+        function clear_bt() {
+            document.getElementById("bt").innerHTML = "";
+            document.getElementById("text4encode").value = "";
+            document.getElementById("key").value = "";
+        }
+
+        // var text_collection =
+        // {
+        //     "DAIHOCHALONG": "MINH",
+        //     "HOCDETHANHCONG": "HA",
+        //     "DAIHOCHAIPHONG": "MAI",
+        //     "VINHHALONG": "HANG",
+        //     "THUONGMAIDIENTU": "HOA",
+        //     "KYTUCXA": "HONG",
+        //     "DOANTHANHNIEN": "CANGTIN",
+        //     "CONGNGHETHONGTIN": "MO",
+        //     "KHOAHOCMAYTINH": "HUE",
+        //     "THIETKEDOHOA": "LIEN"
+        // };
+
+        // for (var text in text_collection) {
+        //     var cipher = new Vigenere_Cipher(text_collection[text], text);
+        //     var result = cipher.encrypt();
+        //     const result_out = document.createElement("p");
+        //     result_out.innerText = "Encrypt: " + text + " (k=" + text_collection[text] + ") : " + result;
+        //     document.getElementById("bt").appendChild(result_out);
+        //     // console.log(text + " : " + result);
+        // }
+
+
+    </script>
+    <script src="bootstrap-5.3.2-dist/js/bootstrap.js"></script>
+</body>
+
+</html>
